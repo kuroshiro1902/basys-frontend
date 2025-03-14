@@ -1,0 +1,140 @@
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+@import "tailwindcss";
+
+@theme {
+  --color-white: hsl(0 0% 100%);
+  /* Màu nền chính hoặc màu của container */
+  --color-background: hsl(0 0% 100%);
+  /* Màu văn bản chính hoặc nội dung trên nền */
+  --color-foreground: hsl(222 47% 25%);
+  /* Màu nền của thẻ (card) */
+  --color-card: hsl(0, 0%, 98%);
+  /* Màu văn bản trên thẻ */
+  --color-card-foreground: hsl(222, 47%, 11%);
+  /* Màu nền của popover hoặc tooltip */
+  --color-popover: hsl(0, 0%, 98%);
+  /* Màu văn bản trong popover hoặc tooltip */
+  --color-popover-foreground: hsl(222, 47%, 11%);
+  /* Màu nút bấm chính hoặc các yếu tố nổi bật */
+  --color-primary: hsl(199, 89%, 49%);
+  /* Màu văn bản hoặc icon trên nút bấm chính */
+  --color-primary-foreground: hsl(0, 0%, 100%);
+  /* Màu nút bấm phụ hoặc yếu tố ít nổi bật hơn */
+  --color-secondary: hsl(216, 33%, 90%);
+  /* Màu văn bản hoặc icon trên nút bấm phụ */
+  --color-secondary-foreground: hsl(199, 89%, 49%);
+  /* Màu nền cho các thành phần ít quan trọng */
+  --color-muted: hsl(216, 33%, 90%);
+  /* Màu văn bản trên nền muted */
+  --color-muted-foreground: hsl(215.4, 16.3%, 46.9%);
+  /* Màu nhấn cho các yếu tố trang trí */
+  --color-accent: hsl(216, 33%, 90%);
+  /* Màu văn bản hoặc icon trên nền accent */
+  --color-accent-foreground: hsl(199, 89%, 49%);
+  /* Màu nền cho cảnh báo hoặc hành động phá hủy */
+  --color-destructive: hsl(0, 84%, 95%);
+  /* Màu văn bản hoặc icon trên nền destructive */
+  --color-destructive-foreground: hsl(0, 100%, 50%);
+  /* Màu viền cho các thành phần có khung */
+  --color-border: hsl(216, 33%, 90%);
+  /* Màu nền của các trường nhập liệu (input) */
+  --color-input: hsl(216, 33%, 90%);
+  /* Màu viền khi các thành phần được focus */
+  --color-ring: hsl(222, 47%, 11%);
+
+  --container-2xl: 1400px;
+}
+
+[data-theme="dark"] {
+  --color-white: hsl(199, 69%, 84%);
+  /* Màu nền chính hoặc màu của container */
+  --color-background: hsl(222, 47%, 11%);
+  /* Màu văn bản chính hoặc nội dung trên nền */
+  --color-foreground: hsl(216, 33%, 68%);
+  /* Màu nền của thẻ (card) */
+  --color-card: hsl(222, 44%, 13%);
+  /* Màu văn bản trên thẻ */
+  --color-card-foreground: hsl(216, 33%, 68%);
+  /* Màu nền của popover hoặc tooltip */
+  --color-popover: hsl(222, 44%, 13%);
+  /* Màu văn bản trong popover hoặc tooltip */
+  --color-popover-foreground: hsl(216, 33%, 68%);
+  /* Màu nút bấm chính hoặc các yếu tố nổi bật */
+  --color-primary: hsl(199, 89%, 49%);
+  /* Màu văn bản hoặc icon trên nút bấm chính */
+  --color-primary-foreground: hsl(0, 0%, 93%);
+  /* Màu nút bấm phụ hoặc yếu tố ít nổi bật hơn */
+  --color-secondary: hsl(216, 33%, 20%);
+  /* Màu văn bản hoặc icon trên nút bấm phụ */
+  --color-secondary-foreground: hsl(199, 89%, 49%);
+  /* Màu nền cho các thành phần ít quan trọng */
+  --color-muted: hsl(216, 33%, 20%);
+  /* Màu văn bản trên nền muted */
+  --color-muted-foreground: hsl(215.4, 16.3%, 46.9%);
+  /* Màu nhấn cho các yếu tố trang trí */
+  --color-accent: hsl(216, 33%, 20%);
+  /* Màu văn bản hoặc icon trên nền accent */
+  --color-accent-foreground: hsl(199, 89%, 49%);
+  /* Màu nền cho cảnh báo hoặc hành động phá hủy */
+  --color-destructive: hsl(0, 0%, 85%);
+  /* Màu văn bản hoặc icon trên nền destructive */
+  --color-destructive-foreground: hsl(0, 100%, 50%);
+  /* Màu viền cho các thành phần có khung */
+  --color-border: hsl(216, 33%, 20%);
+  /* Màu nền của các trường nhập liệu (input) */
+  --color-input: hsl(216, 33%, 20%);
+  /* Màu viền khi các thành phần được focus */
+  --color-ring: hsl(222, 47%, 11%);
+}
+
+.text-linear-primary {
+  background: var(
+    --text-linear-primary,
+    linear-gradient(
+        90deg,
+        hsl(var(--primary)),
+        hsl(var(--light-primary)) 51%,
+        hsl(var(--primary))
+      )
+      0/ 200%
+  );
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+.text-overflow-max-line-4 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  /* number of lines to show */
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
+.text-overflow-max-line-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  /* number of lines to show */
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.right-0 {
+  right: 0;
+}
+
+/* Hide arrow in number input Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide arrow in number input Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
