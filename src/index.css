@@ -90,16 +90,11 @@
 }
 
 .text-linear-primary {
-  background: var(
-    --text-linear-primary,
-    linear-gradient(
-        90deg,
+  background: var(--text-linear-primary,
+      linear-gradient(90deg,
         hsl(var(--primary)),
         hsl(var(--light-primary)) 51%,
-        hsl(var(--primary))
-      )
-      0/ 200%
-  );
+        hsl(var(--primary))) 0/ 200%);
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   background-clip: text !important;
