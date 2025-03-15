@@ -1,10 +1,11 @@
 import { Button, ConfigProvider } from 'antd';
 import theme from './antd.config';
+import Router from './router/router';
 
 function App() {
   return (
     <ConfigProvider theme={theme}>
-      <Button className="bg-primary">Button</Button>
+      <Router />
     </ConfigProvider>
   );
 }
