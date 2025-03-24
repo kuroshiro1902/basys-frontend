@@ -26,7 +26,7 @@ export class BaseService {
   }
 
   throwError<TData>(error: any): TData {
-    const errorData = error.response?.data as TResponse;
-    throw new Error(errorData?.message ?? 'Something went wrong. Try again later.');
+    const message = error.response?.data?.message ?? error?.message ?? 'Something went wrong. Try again later.';
+    throw new Error(message);
   }
 }

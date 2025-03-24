@@ -38,7 +38,7 @@ class ApiService extends BaseService {
   private setupInterceptors(axiosInstance: AxiosInstance) {
     axiosInstance.interceptors.request.use(
       (config) => {
-        const access_token = useAuthStore.getState().access_token;
+        const access_token = useAuthStore.getState().access_token();
         if (access_token) {
           config.headers = new AxiosHeaders({
             ...config.headers,
@@ -94,7 +94,7 @@ class ApiService extends BaseService {
   }
 
   async verifyAccessToken() {
-    const access_token = useAuthStore.getState().access_token;
+    const access_token = useAuthStore.getState().access_token();
     try {
       const {
         data: { data: user },
@@ -105,7 +105,7 @@ class ApiService extends BaseService {
           withCredentials: true,
           headers: {
             'Content-Type': 'application/json',
-            Authorization: access_token ? `Bearer ${useAuthStore.getState().access_token}` : undefined,
+            Authorization: access_token ? `Bearer ${access_token}` : undefined,
           },
         },
       );
