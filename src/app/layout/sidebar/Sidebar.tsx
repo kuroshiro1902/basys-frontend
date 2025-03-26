@@ -1,13 +1,16 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, HomeIcon } from 'lucide-react';
 import { TUser } from '../../auth/models/user.model';
 import { Button } from 'antd';
-import { useState } from 'react';
 import clsx from 'clsx';
 import { Link } from 'react-router';
 import { useAuthStore } from '@/app/auth/auth.store';
+import { ROUTE } from '@/router/routes.const';
+import { useSidebarStore } from './sidebar.store';
 type props = {};
+type TMenuItem = { children?: React.ReactNode; url: string; icon: React.ReactNode };
 
-function Head({ user, isExpanded = false }: { user?: TUser | null; isExpanded?: boolean }) {
+function Head({ user }: { user?: TUser | null }) {
+  const isExpanded = useSidebarStore((s) => s.isExpanded);
   if (!user)
     return (
       <div>
@@ -55,21 +58,49 @@ function Head({ user, isExpanded = false }: { user?: TUser | null; isExpanded?: 
   );
 }
 
+function MenuItem({ children, url, icon }: TMenuItem) {
+  const isExpanded = useSidebarStore((s) => s.isExpanded);
+  return (
+    <Link to={url}>
+      <Button
+        title={children?.toString()}
+        className="justify-start! w-full rounded-none! bg-background/10! hover:bg-background/20! border-0! text-background/80! hover:text-primary!"
+      >
+        {icon}
+        {isExpanded && children}
+      </Button>
+    </Link>
+  );
+}
+function Menu({ user }: { user?: TUser | null }) {
+  if (!user) {
+    return <></>;
+  }
+  return (
+    <div data-role="sidebar--menu">
+      <ul>
+        <li>
+          <MenuItem url={ROUTE.HOME} icon={<HomeIcon size={16} />}>
+            Trang chủ
+          </MenuItem>
+        </li>
+      </ul>
+    </div>
+  );
+}
+
 function Sidebar({}: props) {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const { isExpanded, toggleExpanded } = useSidebarStore();
   const user = useAuthStore((state) => state.user);
   return (
     <div className={clsx('bg-foreground relative h-full w-16 transition-all', { 'w-48': isExpanded })}>
-      <div
-        data-role="expand-button"
-        className="absolute right-0 top-1/2 translate-x-1/2"
-        onClick={() => setIsExpanded(!isExpanded)}
-      >
+      <div data-role="expand-button" className="absolute right-0 top-1/2 translate-x-1/2" onClick={toggleExpanded}>
         <Button className="h-7! aspect-square p-0! bg-foreground! text-background!">
           {isExpanded ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
         </Button>
       </div>
-      <Head user={user} isExpanded={isExpanded} />
+      <Head user={user} />
+      <Menu user={user} />
     </div>
   );
 }
