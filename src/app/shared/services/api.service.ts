@@ -57,7 +57,7 @@ class ApiService extends BaseService {
         const originalRequest = error.config as CustomAxiosRequestConfig;
 
         if (error.response?.status === 401 && !originalRequest?._retry) {
-          const errorData = (error.response?.data as TResponse<string>)?.data;
+          const errorData = (error.response?.data as TResponse<string>)?.message;
 
           if (errorData === 'VALID_ACCESS_TOKEN_REQUIRED') {
             originalRequest._retry = true;
@@ -114,7 +114,7 @@ class ApiService extends BaseService {
       }
     } catch (error) {
       const axiosErrorData = this.handleError<string>(error);
-      if (axiosErrorData === 'VALID_ACCESS_TOKEN_REQUIRED') {
+      if (axiosErrorData.message === 'VALID_ACCESS_TOKEN_REQUIRED') {
         await this.handleRenewAccessToken();
       }
     }

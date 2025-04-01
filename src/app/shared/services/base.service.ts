@@ -22,7 +22,7 @@ export class BaseService {
 
   handleError<TErrorData = unknown>(error: any) {
     const errorData = error.response?.data as TResponse<TErrorData>;
-    return errorData?.data;
+    return errorData;
   }
 
   throwError<TData>(error: any): TData {
