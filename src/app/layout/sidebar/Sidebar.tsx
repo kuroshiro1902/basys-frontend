@@ -6,6 +6,7 @@ import { Link } from 'react-router';
 import { useAuthStore } from '@/app/auth/auth.store';
 import { ROUTE } from '@/router/routes.const';
 import { useSidebarStore } from './sidebar.store';
+import ThemeButton from '@/app/shared/components/theme-button';
 type props = {};
 type TMenuItem = { children?: React.ReactNode; url: string; icon: React.ReactNode };
 
@@ -89,18 +90,41 @@ function Menu({ user }: { user?: TUser | null }) {
   );
 }
 
+function Footer() {
+  const isExpanded = useSidebarStore((s) => s.isExpanded);
+
+  return (
+    <div>
+      <ThemeButton
+        className={clsx('w-full py-5!', { 'justify-start! pl-5!': isExpanded })}
+        isExpanded={isExpanded}
+        label="Chế độ:"
+      />
+    </div>
+  );
+}
+
 function Sidebar({}: props) {
   const { isExpanded, toggleExpanded } = useSidebarStore();
   const user = useAuthStore((state) => state.user);
   return (
-    <div className={clsx('bg-foreground relative h-full w-16 transition-all', { 'w-48': isExpanded })}>
+    <div
+      className={clsx('flex flex-col justify-between bg-foreground relative h-full w-16 transition-all', {
+        'w-48': isExpanded,
+      })}
+    >
       <div data-role="expand-button" className="absolute right-0 top-1/2 translate-x-1/2" onClick={toggleExpanded}>
         <Button className="h-7! aspect-square p-0! bg-foreground! text-background!">
           {isExpanded ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
         </Button>
       </div>
-      <Head user={user} />
-      <Menu user={user} />
+      <div data-role="sidebar-main-content">
+        <Head user={user} />
+        <Menu user={user} />
+      </div>
+      <div data-role="sidebar-footer">
+        <Footer />
+      </div>
     </div>
   );
 }
