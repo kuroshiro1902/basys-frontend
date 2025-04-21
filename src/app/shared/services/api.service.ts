@@ -57,8 +57,7 @@ class ApiService extends BaseService {
         const originalRequest = error.config as CustomAxiosRequestConfig;
 
         if (error.response?.status === 401 && !originalRequest?._retry) {
-          const errorData = (error.response?.data as TResponse<string>)?.message;
-
+          const errorData = (error.response?.data as TResponse<string>)?.data;
           if (errorData === 'VALID_ACCESS_TOKEN_REQUIRED') {
             originalRequest._retry = true;
 
@@ -114,7 +113,7 @@ class ApiService extends BaseService {
       }
     } catch (error) {
       const axiosErrorData = this.handleError<string>(error);
-      if (axiosErrorData.message === 'VALID_ACCESS_TOKEN_REQUIRED') {
+      if (axiosErrorData.data === 'VALID_ACCESS_TOKEN_REQUIRED') {
         await this.handleRenewAccessToken();
       }
     }
@@ -123,7 +122,7 @@ class ApiService extends BaseService {
   private async handleRenewAccessToken(): Promise<TRenewRefreshTokenData> {
     try {
       const { data } = await this.axiosPlainInstance.post<TResponse<TRenewRefreshTokenData>>(
-        `${ENV.serverUrl}/api/auth/access-token`,
+        `/api/auth/access-token`,
       );
       const { access_token, user } = this.handleResponse(data);
       useAuthStore.getState().setUser(user, access_token);

@@ -5,13 +5,12 @@ import * as path from 'node:path';
 
 export default defineConfig(({ mode }) => { // mode from vite params
   const env = loadEnv(mode, process.cwd(), ''); // load env from .env.<mode> file
-  console.log({env});
-  
+ 
   return {
     plugins: [react(), tailwindcss()],
     base: './',
     build: {
-      outDir: 'dist',
+      outDir: 'build',
     },
     resolve: {
       alias: {

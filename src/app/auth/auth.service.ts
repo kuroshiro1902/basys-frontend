@@ -9,7 +9,7 @@ type TLoginData = { user: TUser; access_token: string };
 
 class AuthService extends BaseService {
   constructor() {
-    super(ENV.serverUrl + '/api/auth');
+    super('/api/auth');
   }
   private async login({ email, password }: Pick<TUserInput, 'email' | 'password'>) {
     return await apiService.post<TLoginData>(this.url('/login'), {

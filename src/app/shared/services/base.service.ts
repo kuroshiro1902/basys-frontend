@@ -5,7 +5,7 @@ import qs, { StringifyOptions } from 'query-string';
 export class BaseService {
   private stringifyOptions: StringifyOptions = { arrayFormat: 'separator', arrayFormatSeparator: '&' };
 
-  constructor(private rootUrl = ENV.serverUrl) {}
+  constructor(private rootUrl = '') {}
   url(path: string) {
     return this.rootUrl + path;
   }
