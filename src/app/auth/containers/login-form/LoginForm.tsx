@@ -3,8 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Input, Button, Form } from 'antd';
 import { TUser, UserInputSchema } from '@/app/auth/models/user.model';
-import { authService } from '../../auth.service';
-import { useAuthStore } from '../../auth.store';
+import { useAuthStore, authService } from '../..';
 import { useShallow } from 'zustand/react/shallow';
 import { useEffect } from 'react';
 
@@ -30,7 +29,7 @@ function LoginForm({ onSuccess = () => {} }: props) {
     error,
   } = authService.useLoginMutation({
     onSuccess: (data) => {
-      setUser(data.user, data.access_token);
+      setUser(data.access_token);
     },
   });
 

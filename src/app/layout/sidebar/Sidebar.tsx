@@ -3,7 +3,7 @@ import { TUser } from '../../auth/models/user.model';
 import { Button } from 'antd';
 import clsx from 'clsx';
 import { Link } from 'react-router';
-import { useAuthStore } from '@/app/auth/auth.store';
+import { useAuthStore } from '@/app/auth';
 import { ROUTE } from '@/router/routes.const';
 import { useSidebarStore } from './sidebar.store';
 import ThemeButton from '@/app/shared/components/theme-button';

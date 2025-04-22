@@ -11,7 +11,7 @@
     "build:prod": "tsc -b && vite build --mode prod",
     "lint": "eslint .",
     "preview": "vite preview",
-    "cc": "node cc.cjs"
+    "m": "node m.cjs"
   },
   "dependencies": {
     "@ant-design/v5-patch-for-react-19": "^1.0.3",
@@ -21,6 +21,7 @@
     "antd": "^5.24.3",
     "axios": "^1.8.3",
     "clsx": "^2.1.1",
+    "jwt-decode": "^4.0.0",
     "lucide-react": "^0.482.0",
     "query-string": "^9.1.1",
     "react": "^19.0.0",

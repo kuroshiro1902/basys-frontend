@@ -1,8 +1,4 @@
-type props = {
-	
-};
-
-function Home({}: props){
+function Home() {
   return (
     <div>
       Home component

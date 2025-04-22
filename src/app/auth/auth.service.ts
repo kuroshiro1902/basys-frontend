@@ -1,9 +1,8 @@
-import { TUser, TUserInput } from '@/app/auth/models/user.model';
+import { TUser, TUserInput } from './models/user.model';
 import { useMutation } from '@tanstack/react-query';
 import { TServiceHandler } from '@/app/shared/models/service-handler.model';
 import { apiService } from '../shared/services/api.service';
 import { BaseService } from '../shared/services/base.service';
-import { ENV } from '@/environments/environment';
 
 type TLoginData = { user: TUser; access_token: string };
 

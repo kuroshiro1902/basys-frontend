@@ -5,7 +5,7 @@ import clsx from 'clsx';
 
 type ThemeButtonProps = React.ComponentPropsWithoutRef<typeof Button> & { isExpanded?: boolean; label?: string };
 
-const ThemeButton = forwardRef<HTMLButtonElement, ThemeButtonProps>(({ className, label, ...props }, ref) => {
+const ThemeButton = forwardRef<HTMLButtonElement, ThemeButtonProps>(({ isExpanded, className, label, ...props }, ref) => {
   const [theme, setTheme] = useState(
     typeof window !== 'undefined' && localStorage.getItem('theme') === 'dark' ? 'dark' : 'light',
   );
@@ -29,7 +29,7 @@ const ThemeButton = forwardRef<HTMLButtonElement, ThemeButtonProps>(({ className
       )}
       {...props}
     >
-      {props.isExpanded && <span>{label}</span>}
+      {isExpanded && <span>{label}</span>}
       {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
     </Button>
   );
