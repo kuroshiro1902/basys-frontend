@@ -5,6 +5,14 @@ import { BaseService } from './base.service';
 
 interface CustomAxiosRequestConfig extends AxiosRequestConfig {
   _retry?: boolean;
+  /**
+   * Skip access token renewal if configured
+   */
+  skipTokenRenewal?: boolean;
+  /**
+   * Skip retry failed requests after access token renewal if configured
+   */
+  skipRetryAfterRenewal?: boolean;
 }
 
 type TRenewAccessTokenData = {
@@ -58,30 +66,7 @@ class ApiService extends BaseService {
           const errorData = (error.response?.data as TResponse<string>)?.data;
           if (errorData === 'VALID_ACCESS_TOKEN_REQUIRED') {
             originalRequest._retry = true;
-
-            try {
-              if (!this.renewAccessTokenPromise) {
-                this.renewAccessTokenPromise = this.handleRenewAccessToken();
-              }
-
-              const newToken = await this.renewAccessTokenPromise;
-
-              // Clone và cập nhật config mới để tránh mutation
-              const newConfig = {
-                ...originalRequest,
-                headers: {
-                  ...originalRequest.headers,
-                  Authorization: `Bearer ${newToken}`,
-                },
-              };
-
-              return this.axiosInstance(newConfig);
-            } catch (refreshError) {
-              authStore.logout();
-              return Promise.reject(refreshError);
-            } finally {
-              this.renewAccessTokenPromise = null;
-            }
+            return this.handleTokenRenewal(error, originalRequest);
           }
         }
 
@@ -90,32 +75,41 @@ class ApiService extends BaseService {
     );
   }
 
-  // async verifyAccessToken() {
-  //   const access_token = useAuthStore.getState().access_token();
-  //   try {
-  //     const {
-  //       data: { data: user },
-  //     } = await this.axiosPlainInstance.post<TResponse<TUser>>(
-  //       this.url(`/api/auth/verify`),
-  //       {},
-  //       {
-  //         withCredentials: true,
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           Authorization: access_token ? `Bearer ${access_token}` : undefined,
-  //         },
-  //       },
-  //     );
-  //     if (user) {
-  //       useAuthStore.setState({ user });
-  //     }
-  //   } catch (error) {
-  //     const axiosErrorData = this.handleError<string>(error);
-  //     if (axiosErrorData.data === 'VALID_ACCESS_TOKEN_REQUIRED') {
-  //       await this.handleRenewAccessToken();
-  //     }
-  //   }
-  // }
+  private async handleTokenRenewal(error: AxiosError, config: CustomAxiosRequestConfig) {
+    // Skip token renewal if configured
+    if (config?.skipTokenRenewal) {
+      return Promise.reject(error);
+    }
+
+    try {
+      // Ensure only one token renewal happens at a time
+      if (!this.renewAccessTokenPromise) {
+        this.renewAccessTokenPromise = this.handleRenewAccessToken();
+      }
+      const newToken = await this.renewAccessTokenPromise;
+
+      // Skip retry if configured
+      if (config?.skipRetryAfterRenewal) {
+        return Promise.reject(error);
+      }
+
+      // Retry original request with new token
+      const newConfig = {
+        ...config,
+        headers: {
+          ...config.headers,
+          Authorization: `Bearer ${newToken}`,
+        },
+      };
+
+      return this.axiosInstance(newConfig);
+    } catch (refreshError) {
+      useAuthStore.getState().logout();
+      return Promise.reject(refreshError);
+    } finally {
+      this.renewAccessTokenPromise = null;
+    }
+  }
 
   private async handleRenewAccessToken(): Promise<TRenewAccessTokenData> {
     try {
@@ -131,9 +125,9 @@ class ApiService extends BaseService {
     }
   }
 
-  async get<TData = unknown>(url: string) {
+  async get<TData = unknown>(url: string, config?: CustomAxiosRequestConfig) {
     try {
-      const { data } = await this.axiosInstance.get<TResponse<TData>>(`${url}`);
+      const { data } = await this.axiosInstance.get<TResponse<TData>>(`${url}`, config);
       return this.handleResponse(data);
     } catch (error) {
       return this.throwError<TData>(error);
@@ -149,9 +143,9 @@ class ApiService extends BaseService {
     }
   }
 
-  async post<TData = unknown, TBody = unknown>(url: string, body?: TBody) {
+  async post<TData = unknown, TBody = unknown>(url: string, body?: TBody, config?: CustomAxiosRequestConfig) {
     try {
-      const { data } = await this.axiosInstance.post<TResponse<TData>>(`${url}`, body);
+      const { data } = await this.axiosInstance.post<TResponse<TData>>(`${url}`, body, config);
       return this.handleResponse(data);
     } catch (error) {
       return this.throwError<TData>(error);
@@ -167,9 +161,9 @@ class ApiService extends BaseService {
     }
   }
 
-  async patch<TData = unknown, TBody = unknown>(url: string, body?: TBody) {
+  async patch<TData = unknown, TBody = unknown>(url: string, body?: TBody, config?: CustomAxiosRequestConfig) {
     try {
-      const { data } = await this.axiosInstance.patch<TResponse<TData>>(`${url}`, body);
+      const { data } = await this.axiosInstance.patch<TResponse<TData>>(`${url}`, body, config);
       return this.handleResponse(data);
     } catch (error) {
       return this.throwError<TData>(error);

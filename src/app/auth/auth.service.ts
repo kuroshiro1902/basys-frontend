@@ -6,6 +6,13 @@ import { BaseService } from '../shared/services/base.service';
 
 type TLoginData = { user: TUser; access_token: string };
 
+const API_URL = '/api/auth';
+
+export const getMe = async () => {
+  const me = await apiService.get<TUser>(`${API_URL}/me`, { skipRetryAfterRenewal: true });
+  return me;
+};
+
 class AuthService extends BaseService {
   constructor() {
     super('/api/auth');

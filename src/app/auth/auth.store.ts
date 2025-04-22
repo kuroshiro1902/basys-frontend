@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { jwtDecode } from 'jwt-decode';
 import { TUser } from './models/user.model';
+import { getMe } from './auth.service';
 
 type TAuthData = {
   user: TUser | null;
@@ -11,13 +12,18 @@ type TAuthData = {
 
 export const useAuthStore = create<TAuthData>()((set) => {
   const accessToken = localStorage.getItem('access_token');
+  console.log('accessToken', accessToken);
   let initialUser: TUser | null = null;
   if (accessToken) {
     try {
       initialUser = jwtDecode<TUser>(accessToken);
+      console.log('initialUser', initialUser);
     } catch (error) {
-      console.error('Failed to decode token:', error);
+      getMe();
     }
+  }
+  else {
+    getMe();
   }
 
   return {
