@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronLeft, ChevronRight, HomeIcon } from 'lucide-react';
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from 'lucide-react';
 import { TUser } from '@/core/auth/models/user.model';
 import { Button } from 'antd';
 import clsx from 'clsx';
@@ -83,7 +83,7 @@ function MenuItem({ label, url, icon, children, id }: TMenuItem) {
             title={label?.toString()}
             className={clsx(
               'relative h-9! justify-start! w-full rounded-none! border-0! text-background/80! transition-all',
-              { 
+              {
                 'bg-background/5!': !isOpen,
                 'hover:bg-background/10!': !isOpen,
                 'bg-background/20!': isOpen,
@@ -92,14 +92,18 @@ function MenuItem({ label, url, icon, children, id }: TMenuItem) {
               {
                 'bg-primary/70!': currentActiveItem === id,
                 'hover:bg-primary/80!': currentActiveItem === id,
-              }
+              },
             )}
           >
             {icon}
             {isSidebarExpanded && label}
             {children?.length && (
               <span className="ml-auto">
-                <ChevronDown className="text-inherit!" size={12} />
+                {isOpen ? (
+                  <ChevronUp className="text-inherit!" size={12} />
+                ) : (
+                  <ChevronDown className="text-inherit!" size={12} />
+                )}
               </span>
             )}
             {isOpen && (
