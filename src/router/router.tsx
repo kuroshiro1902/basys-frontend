@@ -1,5 +1,6 @@
 import { lazy } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
+import { ROUTE } from './routes.const';
 
 const UserManagement = lazy(() => import('../app/user-management/UserManagement'));
 const Layout = lazy(() => import('../app/layout/Layout'));
@@ -12,10 +13,11 @@ export default function Router() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="login" element={<Login />} />
-        <Route path="/" element={<Layout />}>
-          <Route path="home" element={<Navigate to="/" replace />} />
-          <Route path="user-management" element={<UserManagement />} />
+        <Route path={ROUTE.LOGIN} element={<Login />} />
+        <Route element={<Layout />}>
+          <Route path={ROUTE.INDEX} element={<Home />} />
+          <Route path={ROUTE.HOME} element={<Navigate to={ROUTE.INDEX} replace />} />
+          <Route path={ROUTE.USER_MANAGEMENT} element={<UserManagement />} />
           {/* <Route path="about" element={<About />} /> */}
 
           {/* <Route element={<AuthLayout />}>

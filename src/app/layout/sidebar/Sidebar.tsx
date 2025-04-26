@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, HomeIcon } from 'lucide-react';
+import { ChevronDown, ChevronLeft, ChevronRight, HomeIcon } from 'lucide-react';
 import { TUser } from '@/core/auth/models/user.model';
 import { Button } from 'antd';
 import clsx from 'clsx';
@@ -9,6 +9,7 @@ import { useSidebarStore } from './sidebar.store';
 import ThemeButton from '@/app/shared/components/theme-button';
 import { TMenuItem } from './models/menu-item.model';
 import { createMenu } from './utils/create-menu.util';
+import { useState } from 'react';
 type props = {};
 
 function Head({ user }: { user?: TUser | null }) {
@@ -61,35 +62,57 @@ function Head({ user }: { user?: TUser | null }) {
 }
 
 function MenuItem({ label, url, icon, children }: TMenuItem) {
-  const isExpanded = useSidebarStore((s) => s.isExpanded);
+  const isSidebarExpanded = useSidebarStore((s) => s.isExpanded);
+  const [isOpen, setIsOpen] = useState(false);
   const Element = url
-    ? ({ children }: { children: any }) => <Link to={url}>{children}</Link>
-    : ({ children }: { children: any }) => <span>{children}</span>;
+    ? ({ children }: any) => <Link to={url}>{children}</Link>
+    : ({ children }: any) => <span>{children}</span>;
+
   return (
-    <Element>
-      <details>
-        <summary className="list-none">
+    <details open={isOpen}>
+      <summary className="list-none">
+        <Element>
           <Button
+            onClick={() => children?.length && setIsOpen(!isOpen)}
             title={label?.toString()}
-            className="justify-start! w-full rounded-none! bg-background/10! hover:bg-background/20! border-0! text-background/80! hover:text-primary!"
+            className={clsx(
+              'relative h-9! justify-start! w-full rounded-none! border-0! text-background/80! transition-all',
+              { 
+                'bg-background/5!': !isOpen,
+                'hover:bg-background/10!': !isOpen,
+                'hover:text-primary!': !isOpen,
+                'bg-background/20!': isOpen,
+                'hover:bg-background/30!': isOpen,
+                'hover:text-background/90!': isOpen,
+               },
+            )}
           >
             {icon}
-            {isExpanded && label}
+            {isSidebarExpanded && label}
+            {children?.length && (
+              <span className="ml-auto">
+                <ChevronDown className="text-inherit!" size={12} />
+              </span>
+            )}
+            {isOpen && (
+              <span className="absolute left-2 bottom-[-4px] w-0 h-0 border-l-4 border-l-transparent border-r-4 border-r-transparent border-b-4 border-b-background/10 rotate-180" />
+            )}
           </Button>
-        </summary>
-        {(children?.length ?? 0) > 0 && (
-          <ul data-role="sidebar--menu-list">
-            {children?.map((child) => (
-              <li data-role="sidebar--menu-item">
-                <MenuItem {...child} />
+        </Element>
+      </summary>
+      {(children?.length ?? 0) > 0 && (
+        <ul data-role="sidebar--menu-list" className="bg-background/5">
+          {children?.map((child, i) => (
+            <li data-role="sidebar--menu-item" key={i}>
+              <MenuItem {...child} />
             </li>
-            ))}
-          </ul>
-        )}
-      </details>
-    </Element>
+          ))}
+        </ul>
+      )}
+    </details>
   );
 }
+
 function Menu({ user }: { user?: TUser | null }) {
   if (!user) {
     return <></>;
@@ -98,8 +121,8 @@ function Menu({ user }: { user?: TUser | null }) {
     <div data-role="sidebar--menu">
       <ul data-role="sidebar--menu-list">
         <li data-role="sidebar--menu-item">
-          {createMenu(user.permissions).map((menu) => (
-            <MenuItem {...menu} />
+          {createMenu(user.permissions).map((menu, i) => (
+            <MenuItem key={i} {...menu} />
           ))}
         </li>
       </ul>

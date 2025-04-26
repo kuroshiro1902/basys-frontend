@@ -1,17 +1,7 @@
 import { TPermission } from '@/core/permission/models/permission.model';
 import { TMenuItem } from '../models/menu-item.model';
 import { EPermission } from '@/core/permission/constants/permission.const';
-import { ROUTE } from '@/router/routes.const';
-import { HomeIcon } from 'lucide-react';
-import { createElement } from 'react';
-
-const MENU: TMenuItem[] = [
-  {
-    label: 'Trang chủ',
-    url: ROUTE.HOME,
-    icon: createElement(HomeIcon, { size: 16 }),
-  },
-];
+import { MENU } from '../constants/menu.constant';
 
 export const createMenu = (permissionIds: TPermission['id'][]): TMenuItem[] => {
   const menu: TMenuItem[] = [];

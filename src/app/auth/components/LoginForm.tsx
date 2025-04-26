@@ -5,8 +5,8 @@ import { Input, Button, Form } from 'antd';
 import { TUser, UserInputSchema } from '@/core/auth/models/user.model';
 import { useShallow } from 'zustand/react/shallow';
 import { useEffect } from 'react';
-import { authService } from '@/core/auth/auth.service';
 import { useAuthStore } from '@/core/auth/auth.store';
+import useLoginMutation from '@/core/auth/hooks/use-login-mutation.hook';
 
 const loginSchema = UserInputSchema.pick({ email: true, password: true });
 
@@ -28,7 +28,7 @@ function LoginForm({ onSuccess = () => {} }: props) {
     mutate: login,
     isPending,
     error,
-  } = authService.useLoginMutation({
+  } = useLoginMutation({
     onSuccess: (data) => {
       setUser(data.access_token);
     },
