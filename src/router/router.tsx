@@ -2,11 +2,12 @@ import { lazy } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
 import { ROUTE } from './routes.const';
 
-const UserManagement = lazy(() => import('../app/user-management/UserManagement'));
+const UserManagement = lazy(() => import('../app/user-management/UserManagementMain'));
 const Layout = lazy(() => import('../app/layout/Layout'));
 const Home = lazy(() => import('../app/home/Home'));
 const Login = lazy(() => import('../app/auth/Login'));
 const About = lazy(() => import('../app/about/About'));
+const UserManagementDashboard = lazy(() => import('../app/user-management/UserManagementDashboard')); 
 const NotFound = lazy(() => import('../app/not-found/NotFound'));
 
 export default function Router() {
@@ -17,7 +18,9 @@ export default function Router() {
         <Route element={<Layout />}>
           <Route path={ROUTE.INDEX} element={<Home />} />
           <Route path={ROUTE.HOME} element={<Navigate to={ROUTE.INDEX} replace />} />
-          <Route path={ROUTE.USER_MANAGEMENT} element={<UserManagement />} />
+          <Route path={ROUTE.USER_MANAGEMENT_MAIN} element={<UserManagement />} />
+          <Route path={ROUTE.USER_MANAGEMENT_DASHBOARD} element={<UserManagementDashboard />} />
+          <Route path={ROUTE.USER_MANAGEMENT} element={<Navigate to={ROUTE.USER_MANAGEMENT_MAIN} replace />} />
           {/* <Route path="about" element={<About />} /> */}
 
           {/* <Route element={<AuthLayout />}>

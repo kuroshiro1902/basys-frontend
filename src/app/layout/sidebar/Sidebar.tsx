@@ -61,8 +61,11 @@ function Head({ user }: { user?: TUser | null }) {
   );
 }
 
-function MenuItem({ label, url, icon, children }: TMenuItem) {
+function MenuItem({ label, url, icon, children, id }: TMenuItem) {
   const isSidebarExpanded = useSidebarStore((s) => s.isExpanded);
+  const currentActiveItem = useSidebarStore((s) => s.currentActiveItem);
+  const setActiveItem = useSidebarStore((s) => s.setActiveItem);
+
   const [isOpen, setIsOpen] = useState(false);
   const Element = url
     ? ({ children }: any) => <Link to={url}>{children}</Link>
@@ -73,18 +76,23 @@ function MenuItem({ label, url, icon, children }: TMenuItem) {
       <summary className="list-none">
         <Element>
           <Button
-            onClick={() => children?.length && setIsOpen(!isOpen)}
+            onClick={() => {
+              children?.length && setIsOpen(!isOpen);
+              id && setActiveItem(id);
+            }}
             title={label?.toString()}
             className={clsx(
               'relative h-9! justify-start! w-full rounded-none! border-0! text-background/80! transition-all',
               { 
                 'bg-background/5!': !isOpen,
                 'hover:bg-background/10!': !isOpen,
-                'hover:text-primary!': !isOpen,
                 'bg-background/20!': isOpen,
                 'hover:bg-background/30!': isOpen,
-                'hover:text-background/90!': isOpen,
-               },
+              },
+              {
+                'bg-primary/70!': currentActiveItem === id,
+                'hover:bg-primary/80!': currentActiveItem === id,
+              }
             )}
           >
             {icon}
