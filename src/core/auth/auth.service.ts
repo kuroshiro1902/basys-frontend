@@ -1,6 +1,6 @@
 import { TUser, TUserInput } from './models/user.model';
 import { useMutation } from '@tanstack/react-query';
-import { TServiceHandler } from '@/app/shared/models/service-handler.model';
+import { THookHandler } from '../shared/models/service-handler.model';
 import { apiService } from '../shared/services/api.service';
 import { BaseService } from '../shared/services/base.service';
 
@@ -24,7 +24,7 @@ class AuthService extends BaseService {
     });
   }
 
-  useLoginMutation(handlers?: TServiceHandler<TLoginData>) {
+  useLoginMutation(handlers?: THookHandler<TLoginData>) {
     return useMutation({
       mutationFn: (cred: Pick<TUserInput, 'email' | 'password'>) => this.login(cred),
       onSuccess: (data) => {

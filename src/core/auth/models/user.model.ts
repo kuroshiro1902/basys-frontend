@@ -6,6 +6,7 @@ export const UserSchema = z.object({
   email: z.string().email(),
   avatarImg: z.string().optional(),
   bgImg: z.string().optional(),
+  permissions: z.array(z.string()),
 });
 
 export const UserInputSchema = z.object({

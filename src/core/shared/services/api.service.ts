@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosHeaders, AxiosInstance, AxiosRequestConfig, RawAxiosRequestHeaders } from 'axios';
-import { TUser, useAuthStore } from '@/app/auth';
+import { useAuthStore } from '../../auth/auth.store';
+import { TUser } from '../../auth/models/user.model';
 import { TResponse } from '../models/api-response.model';
 import { BaseService } from './base.service';
 

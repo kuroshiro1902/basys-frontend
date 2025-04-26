@@ -1,7 +1,7 @@
-import PageContainer from '@/app/shared/components/page-container';
 import { useNavigate, useSearchParams } from 'react-router';
-import { REDIRECT_PARAM } from '../../constants/redirect-param.const';
-import { LoginForm } from '../login-form';
+import PageContainer from '@/app/shared/components/page-container';
+import LoginForm from './components/LoginForm';
+import { REDIRECT_PARAM } from '@/core/auth/constants/redirect-param.const';
 
 function Login() {
   const navigate = useNavigate();

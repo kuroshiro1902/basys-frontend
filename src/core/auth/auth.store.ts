@@ -12,7 +12,6 @@ type TAuthData = {
 
 export const useAuthStore = create<TAuthData>()((set) => {
   const accessToken = localStorage.getItem('access_token');
-  console.log('accessToken', accessToken);
   let initialUser: TUser | null = null;
   if (accessToken) {
     try {

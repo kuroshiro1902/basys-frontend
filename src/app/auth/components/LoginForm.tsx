@@ -2,10 +2,11 @@ import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Input, Button, Form } from 'antd';
-import { TUser, UserInputSchema } from '@/app/auth/models/user.model';
-import { useAuthStore, authService } from '../..';
+import { TUser, UserInputSchema } from '@/core/auth/models/user.model';
 import { useShallow } from 'zustand/react/shallow';
 import { useEffect } from 'react';
+import { authService } from '@/core/auth/auth.service';
+import { useAuthStore } from '@/core/auth/auth.store';
 
 const loginSchema = UserInputSchema.pick({ email: true, password: true });
 

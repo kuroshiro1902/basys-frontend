@@ -1,14 +1,15 @@
 import { ChevronLeft, ChevronRight, HomeIcon } from 'lucide-react';
-import { TUser } from '../../auth/models/user.model';
+import { TUser } from '@/core/auth/models/user.model';
 import { Button } from 'antd';
 import clsx from 'clsx';
 import { Link } from 'react-router';
-import { useAuthStore } from '@/app/auth';
+import { useAuthStore } from '@/core/auth/auth.store';
 import { ROUTE } from '@/router/routes.const';
 import { useSidebarStore } from './sidebar.store';
 import ThemeButton from '@/app/shared/components/theme-button';
+import { TMenuItem } from './models/menu-item.model';
+import { createMenu } from './utils/create-menu.util';
 type props = {};
-type TMenuItem = { children?: React.ReactNode; url: string; icon: React.ReactNode };
 
 function Head({ user }: { user?: TUser | null }) {
   const isExpanded = useSidebarStore((s) => s.isExpanded);
@@ -59,18 +60,34 @@ function Head({ user }: { user?: TUser | null }) {
   );
 }
 
-function MenuItem({ children, url, icon }: TMenuItem) {
+function MenuItem({ label, url, icon, children }: TMenuItem) {
   const isExpanded = useSidebarStore((s) => s.isExpanded);
+  const Element = url
+    ? ({ children }: { children: any }) => <Link to={url}>{children}</Link>
+    : ({ children }: { children: any }) => <span>{children}</span>;
   return (
-    <Link to={url}>
-      <Button
-        title={children?.toString()}
-        className="justify-start! w-full rounded-none! bg-background/10! hover:bg-background/20! border-0! text-background/80! hover:text-primary!"
-      >
-        {icon}
-        {isExpanded && children}
-      </Button>
-    </Link>
+    <Element>
+      <details>
+        <summary className="list-none">
+          <Button
+            title={label?.toString()}
+            className="justify-start! w-full rounded-none! bg-background/10! hover:bg-background/20! border-0! text-background/80! hover:text-primary!"
+          >
+            {icon}
+            {isExpanded && label}
+          </Button>
+        </summary>
+        {(children?.length ?? 0) > 0 && (
+          <ul data-role="sidebar--menu-list">
+            {children?.map((child) => (
+              <li data-role="sidebar--menu-item">
+                <MenuItem {...child} />
+            </li>
+            ))}
+          </ul>
+        )}
+      </details>
+    </Element>
   );
 }
 function Menu({ user }: { user?: TUser | null }) {
@@ -79,11 +96,11 @@ function Menu({ user }: { user?: TUser | null }) {
   }
   return (
     <div data-role="sidebar--menu">
-      <ul>
-        <li>
-          <MenuItem url={ROUTE.HOME} icon={<HomeIcon size={16} />}>
-            Trang chủ
-          </MenuItem>
+      <ul data-role="sidebar--menu-list">
+        <li data-role="sidebar--menu-item">
+          {createMenu(user.permissions).map((menu) => (
+            <MenuItem {...menu} />
+          ))}
         </li>
       </ul>
     </div>
@@ -118,11 +135,11 @@ function Sidebar({}: props) {
           {isExpanded ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
         </Button>
       </div>
-      <div data-role="sidebar-main-content">
+      <div data-role="sidebar--main-content">
         <Head user={user} />
         <Menu user={user} />
       </div>
-      <div data-role="sidebar-footer">
+      <div data-role="sidebar--footer">
         <Footer />
       </div>
     </div>

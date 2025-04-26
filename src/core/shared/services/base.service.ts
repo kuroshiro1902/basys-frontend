@@ -1,4 +1,3 @@
-import { ENV } from '@/environments/environment';
 import { TResponse } from '../models/api-response.model';
 import qs, { StringifyOptions } from 'query-string';
 
