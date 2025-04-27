@@ -1,9 +1,36 @@
-function PageContainer({ pageTitle, children }: { pageTitle?: string; children?: React.ReactNode }) {
-  return (
-    <div data-page-title={pageTitle ?? ''} className={`w-full flex justify-center items-center bg-foreground/10`}>
-      {children}
-    </div>
-  );
-}
+import { useSidebarStore } from '@/app/layout/sidebar/sidebar.store';
+import { forwardRef, useEffect } from 'react';
+
+type PageContainerProps = {
+  pageTitle?: string;
+  activeSidebarItemId?: string;
+  children?: React.ReactNode;
+};
+
+const PageContainer = forwardRef<HTMLDivElement, PageContainerProps>(
+  ({ pageTitle, activeSidebarItemId, children }, ref) => {
+    const activeItemId = useSidebarStore((state) => state.currentActiveItem);
+    const setActiveItem = useSidebarStore((state) => state.setActiveItem);
+
+    useEffect(() => {
+      pageTitle && (document.title = pageTitle);
+      if (activeSidebarItemId && activeSidebarItemId !== activeItemId) {
+        setActiveItem(activeSidebarItemId);
+      }
+    }, []);
+
+    return (
+      <div 
+        ref={ref}
+        data-page-title={pageTitle ?? ''} 
+        className={`w-full p-2 bg-foreground/10`}
+      >
+        {children}
+      </div>
+    );
+  }
+);
+
+PageContainer.displayName = 'PageContainer';
 
 export default PageContainer;

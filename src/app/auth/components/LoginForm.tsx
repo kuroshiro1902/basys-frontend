@@ -1,16 +1,11 @@
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { Input, Button, Form } from 'antd';
-import { TUser, UserInputSchema } from '@/core/auth/models/user.model';
+import { TUser, TUserLoginInput, ZUserLoginInput } from '@/core/user/models/user.model';
 import { useShallow } from 'zustand/react/shallow';
 import { useEffect } from 'react';
 import { useAuthStore } from '@/core/auth/auth.store';
 import useLoginMutation from '@/core/auth/hooks/use-login-mutation.hook';
-
-const loginSchema = UserInputSchema.pick({ email: true, password: true });
-
-type LoginFormValues = z.infer<typeof loginSchema>;
 
 type props = {
   onSuccess?: (user: TUser) => void;
@@ -38,8 +33,8 @@ function LoginForm({ onSuccess = () => {} }: props) {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<TUserLoginInput>({
+    resolver: zodResolver(ZUserLoginInput),
     disabled: isPending || !!user,
   });
 
@@ -52,7 +47,7 @@ function LoginForm({ onSuccess = () => {} }: props) {
   if (user) {
     return <></>;
   }
-  const onSubmit = (data: LoginFormValues) => {
+  const onSubmit = (data: TUserLoginInput) => {
     login(data);
   };
 

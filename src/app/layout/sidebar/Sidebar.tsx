@@ -1,5 +1,5 @@
 import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from 'lucide-react';
-import { TUser } from '@/core/auth/models/user.model';
+import { TUser } from '@/core/user/models/user.model';
 import { Button } from 'antd';
 import clsx from 'clsx';
 import { Link } from 'react-router';

@@ -5,7 +5,9 @@ function Layout() {
   return (
     <div data-role="layout" className="flex h-[100vh]">
       <Sidebar />
-      <Outlet />
+      <div className="overflow-x-auto flex-1">
+        <Outlet />
+      </div>
     </div>
   );
 }

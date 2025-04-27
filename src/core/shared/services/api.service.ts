@@ -1,8 +1,8 @@
 import axios, { AxiosError, AxiosHeaders, AxiosInstance, AxiosRequestConfig, RawAxiosRequestHeaders } from 'axios';
 import { useAuthStore } from '../../auth/auth.store';
-import { TUser } from '../../auth/models/user.model';
+import { TUser } from '../../user/models/user.model';
 import { TResponse } from '../models/api-response.model';
-import { BaseService } from './base.service';
+import { ACCESS_TOKEN_KEY } from '@/core/auth/constants/access-token-key.const';
 
 interface CustomAxiosRequestConfig extends AxiosRequestConfig {
   _retry?: boolean;
@@ -21,14 +21,13 @@ type TRenewAccessTokenData = {
   user: TUser;
 };
 
-class ApiService extends BaseService {
+class ApiService {
   private axiosPlainInstance: AxiosInstance; // For non-interceptor requests
   private axiosInstance: AxiosInstance;
   private renewAccessTokenPromise: Promise<TRenewAccessTokenData> | null = null;
 
   private defaultHeaders: RawAxiosRequestHeaders = { 'Content-Type': 'application/json' };
   constructor() {
-    super();
     this.axiosInstance = axios.create({
       headers: this.defaultHeaders,
       withCredentials: true,
@@ -45,7 +44,7 @@ class ApiService extends BaseService {
   private setupInterceptors(axiosInstance: AxiosInstance) {
     axiosInstance.interceptors.request.use(
       (config) => {
-        const access_token = useAuthStore.getState().access_token();
+        const access_token = localStorage.getItem(ACCESS_TOKEN_KEY);
         if (access_token) {
           config.headers = new AxiosHeaders({
             ...config.headers,
@@ -60,7 +59,6 @@ class ApiService extends BaseService {
     axiosInstance.interceptors.response.use(
       (response) => response,
       async (error: AxiosError) => {
-        const authStore = useAuthStore.getState();
         const originalRequest = error.config as CustomAxiosRequestConfig;
 
         if (error.response?.status === 401 && !originalRequest?._retry) {
@@ -89,6 +87,8 @@ class ApiService extends BaseService {
       }
       const newToken = await this.renewAccessTokenPromise;
 
+      console.log('config?.skipRetryAfterRenewal', config?.skipRetryAfterRenewal);
+      
       // Skip retry if configured
       if (config?.skipRetryAfterRenewal) {
         return Promise.reject(error);
@@ -99,24 +99,21 @@ class ApiService extends BaseService {
         ...config,
         headers: {
           ...config.headers,
-          Authorization: `Bearer ${newToken}`,
+          Authorization: `Bearer ${newToken.access_token}`,
         },
       };
-
-      return this.axiosInstance(newConfig);
+      this.renewAccessTokenPromise = null;
+      return await this.axiosInstance(newConfig);
     } catch (refreshError) {
+      this.renewAccessTokenPromise = null;
       useAuthStore.getState().logout();
       return Promise.reject(refreshError);
-    } finally {
-      this.renewAccessTokenPromise = null;
     }
   }
 
   private async handleRenewAccessToken(): Promise<TRenewAccessTokenData> {
     try {
-      const { data } = await this.axiosPlainInstance.post<TResponse<TRenewAccessTokenData>>(
-        `/api/auth/access-token`,
-      );
+      const { data } = await this.axiosPlainInstance.post<TResponse<TRenewAccessTokenData>>(`/api/auth/access-token`);
       const { access_token, user } = this.handleResponse(data);
       useAuthStore.getState().setUser(access_token);
       return { access_token, user };
@@ -169,6 +166,24 @@ class ApiService extends BaseService {
     } catch (error) {
       return this.throwError<TData>(error);
     }
+  }
+
+  private handleResponse<TData = unknown>(res: TResponse<TData>) {
+    if (res.success) {
+      return res.data;
+    } else {
+      throw new Error(res.message ?? 'Something went wrong. Try again later.');
+    }
+  }
+
+  private handleError<TErrorData = unknown>(error: any) {
+    const errorData = error.response?.data as TResponse<TErrorData>;
+    return errorData;
+  }
+
+  private throwError<TData>(error: any): TData {
+    const message = error.response?.data?.message ?? error?.message ?? 'Something went wrong. Try again later.';
+    throw new Error(message);
   }
 }
 

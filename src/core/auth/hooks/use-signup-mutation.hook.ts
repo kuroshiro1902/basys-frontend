@@ -1,17 +1,15 @@
 import { useMutation } from '@tanstack/react-query';
-import { TUserLoginInput } from '@/core/user/models/user.model';
+import { signup } from '../auth.service';
+import { TUserCreateInput } from '@/core/user/models/user.model';
 import { THookHandler } from '@/core/shared/models/service-handler.model';
-import { login } from '../auth.service';
 
 type TServiceResponseData<T extends (...args: any[]) => Promise<any>> = Awaited<ReturnType<T>>;
 
-const useLoginMutation = (handlers?: THookHandler<TServiceResponseData<typeof login>>) => {
+const useSignupMutation = (handlers?: THookHandler<TServiceResponseData<typeof signup>>) => {
   return useMutation({
-    mutationFn: (cred: TUserLoginInput) => login(cred),
+    mutationFn: (data: TUserCreateInput) => signup(data),
     onSuccess: (data) => {
-      if (data) {
-        handlers?.onSuccess?.(data);
-      }
+      handlers?.onSuccess?.(data);
     },
     onError(error) {
       handlers?.onError?.(error);
@@ -19,4 +17,4 @@ const useLoginMutation = (handlers?: THookHandler<TServiceResponseData<typeof lo
   });
 };
 
-export default useLoginMutation;
+export default useSignupMutation;

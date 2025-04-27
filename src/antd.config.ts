@@ -1,5 +1,5 @@
 import type { ThemeConfig } from 'antd';
-
+// TODO: Config antd compatible with tailwindcss
 const theme: ThemeConfig = {
   token: {
     colorPrimary: 'hsl(199, 89%, 49%)',
@@ -24,6 +24,43 @@ const theme: ThemeConfig = {
     colorTextDisabled: 'hsl(215.4, 16.3%, 46.9%)',
     colorErrorBg: 'hsl(0, 84%, 95%)',
   },
+  // components: {
+  //   Table: {
+  //     headerBg: 'var(--color-muted)',
+  //     headerColor: 'var(--color-foreground)',
+  //     rowHoverBg: 'var(--color-accent)',
+  //     colorBgContainer: 'var(--color-background)',
+  //     borderColor: 'var(--color-border)',
+  //     colorBgBase: 'var(--color-background)',
+  //   },
+  //   Button: {
+  //     primaryColor: 'var(--color-primary-foreground)',
+  //     defaultBg: 'var(--color-card)',
+  //     defaultColor: 'var(--color-card-foreground)',
+  //     defaultBorderColor: 'var(--color-border)',
+  //   },
+  //   Input: {
+  //     colorBgContainer: 'var(--color-input)',
+  //     colorBorder: 'var(--color-border)',
+  //     colorText: 'var(--color-foreground)',
+  //     colorTextPlaceholder: 'var(--color-muted-foreground)',
+  //   },
+  //   Select: {
+  //     colorBgContainer: 'var(--color-input)',
+  //     colorBorder: 'var(--color-border)',
+  //     colorText: 'var(--color-foreground)',
+  //     colorTextPlaceholder: 'var(--color-muted-foreground)',
+  //   },
+  //   Modal: {
+  //     contentBg: 'var(--color-card)',
+  //     headerBg: 'var(--color-card)',
+  //     titleColor: 'var(--color-card-foreground)',
+  //   },
+  //   Card: {
+  //     colorBgContainer: 'var(--color-card)',
+  //     colorBorderSecondary: 'var(--color-border)',
+  //   },
+  // }
 };
 
 export default theme;

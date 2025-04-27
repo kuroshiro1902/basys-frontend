@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BootstrapContext } from './app/contexts/bootstrap.context';
 
 const queryClient = new QueryClient({
-  defaultOptions: { queries: { retry: 3, refetchOnWindowFocus: false, gcTime: 5 * 60 * 1000 } },
+  defaultOptions: { queries: { retry: false, refetchOnWindowFocus: false, gcTime: 5 * 60 * 1000 } },
 });
 
 function App() {
