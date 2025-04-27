@@ -4,7 +4,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ZUserCreateInput, TUserCreateInput } from '@/core/user/models/user.model';
 import { throttle } from '@/utils/throttle.util';
-import useSignupMutation from '@/core/auth/hooks/use-signup-mutation.hook';
+import useSignupMutation from '@/core/auth/hooks/useSignupMutation.hook';
 
 type props = {
   onSuccess?: () => void;

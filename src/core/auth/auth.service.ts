@@ -20,3 +20,7 @@ export const login = async ({ email, password }: Pick<TUserCreateInput, 'email' 
 export const signup = async (userInput: TUserCreateInput) => {
   return await apiService.post<TUser>(`${API_URL}/signup`, userInput);
 };
+
+export const logout = async () => {
+  return await apiService.post<boolean>(`${API_URL}/logout`);
+};

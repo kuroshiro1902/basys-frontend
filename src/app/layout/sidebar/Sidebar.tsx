@@ -1,8 +1,8 @@
-import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp, LogOut } from 'lucide-react';
 import { TUser } from '@/core/user/models/user.model';
-import { Button } from 'antd';
+import { Button, message, Modal } from 'antd';
 import clsx from 'clsx';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { useAuthStore } from '@/core/auth/auth.store';
 import { ROUTE } from '@/router/routes.const';
 import { useSidebarStore } from './sidebar.store';
@@ -10,6 +10,7 @@ import ThemeButton from '@/app/shared/components/theme-button';
 import { TMenuItem } from './models/menu-item.model';
 import { createMenu } from './utils/create-menu.util';
 import { useState } from 'react';
+import useLogoutMutation from '@/core/auth/hooks/useLogoutMutation.hook';
 type props = {};
 
 function Head({ user }: { user?: TUser | null }) {
@@ -72,47 +73,45 @@ function MenuItem({ label, url, icon, children, id }: TMenuItem) {
     : ({ children }: any) => <span>{children}</span>;
 
   return (
-    <details open={isOpen}>
-      <summary className="list-none">
-        <Element>
-          <Button
-            onClick={() => {
-              children?.length && setIsOpen(!isOpen);
-              id && setActiveItem(id);
-            }}
-            title={label?.toString()}
-            className={clsx(
-              'relative h-9! justify-start! w-full rounded-none! border-0! text-background/80! transition-all',
-              {
-                'bg-background/5!': !isOpen,
-                'hover:bg-background/10!': !isOpen,
-                'bg-background/20!': isOpen,
-                'hover:bg-background/30!': isOpen,
-              },
-              {
-                'bg-primary/70!': currentActiveItem === id,
-                'hover:bg-primary/80!': currentActiveItem === id,
-              },
-            )}
-          >
-            {icon}
-            {isSidebarExpanded && label}
-            {children?.length && (
-              <span className="ml-auto">
-                {isOpen ? (
-                  <ChevronUp className="text-inherit!" size={12} />
-                ) : (
-                  <ChevronDown className="text-inherit!" size={12} />
-                )}
-              </span>
-            )}
-            {isOpen && (
-              <span className="absolute left-2 bottom-[-4px] w-0 h-0 border-l-4 border-l-transparent border-r-4 border-r-transparent border-b-4 border-b-background/10 rotate-180" />
-            )}
-          </Button>
-        </Element>
-      </summary>
-      {(children?.length ?? 0) > 0 && (
+    <div>
+      <Element>
+        <Button
+          onClick={() => {
+            children?.length && setIsOpen(!isOpen);
+            id && setActiveItem(id);
+          }}
+          title={label?.toString()}
+          className={clsx(
+            'relative h-9! justify-start! w-full rounded-none! border-0! text-background/80! transition-all',
+            {
+              'bg-background/5!': !isOpen,
+              'hover:bg-background/10!': !isOpen,
+              'bg-background/20!': isOpen,
+              'hover:bg-background/30!': isOpen,
+            },
+            {
+              'bg-primary/70!': currentActiveItem === id,
+              'hover:bg-primary/80!': currentActiveItem === id,
+            },
+          )}
+        >
+          {icon}
+          {isSidebarExpanded && label}
+          {children?.length && (
+            <span className="ml-auto">
+              {isOpen ? (
+                <ChevronUp className="text-inherit!" size={12} />
+              ) : (
+                <ChevronDown className="text-inherit!" size={12} />
+              )}
+            </span>
+          )}
+          {isOpen && (
+            <span className="absolute left-2 bottom-[-4px] w-0 h-0 border-l-4 border-l-transparent border-r-4 border-r-transparent border-b-4 border-b-background/10 rotate-180" />
+          )}
+        </Button>
+      </Element>
+      {isOpen && (children?.length ?? 0) > 0 && (
         <ul data-role="sidebar--menu-list" className="bg-background/5">
           {children?.map((child, i) => (
             <li data-role="sidebar--menu-item" key={i}>
@@ -121,7 +120,36 @@ function MenuItem({ label, url, icon, children, id }: TMenuItem) {
           ))}
         </ul>
       )}
-    </details>
+    </div>
+  );
+}
+
+function LogoutButton() {
+  const isExpanded = useSidebarStore((s) => s.isExpanded);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
+  const logout = useAuthStore((s) => s.logout);
+  const { mutate: handleLogout, isPending } = useLogoutMutation({
+    onSuccess: () => {
+      logout();
+      setTimeout(() => {
+        navigate(ROUTE.INDEX);
+      }, 100);
+    },
+    onError: (error: any) => {
+      message.error(error.message);
+    },
+  });
+  return (
+    <>
+      <Modal open={isModalOpen} onOk={() => handleLogout()} onCancel={() => setIsModalOpen(false)}>
+        <p className="my-2">Bạn có muốn đăng xuất không?</p>
+      </Modal>
+      <Button type="link" title="Đăng xuất" className="w-full justify-start!" onClick={() => setIsModalOpen(true)}>
+        <LogOut size={16} />
+        {isExpanded && <span>Đăng xuất</span>}
+      </Button>
+    </>
   );
 }
 
@@ -132,11 +160,12 @@ function Menu({ user }: { user?: TUser | null }) {
   return (
     <div data-role="sidebar--menu">
       <ul data-role="sidebar--menu-list">
-        <li data-role="sidebar--menu-item">
-          {createMenu(user.permissions).map((menu, i) => (
-            <MenuItem key={i} {...menu} />
-          ))}
-        </li>
+        {createMenu(user.permissions ?? []).map((menu, i) => (
+          <li data-role="sidebar--menu-item" key={i}>
+            <MenuItem {...menu} />
+          </li>
+        ))}
+        <LogoutButton />
       </ul>
     </div>
   );

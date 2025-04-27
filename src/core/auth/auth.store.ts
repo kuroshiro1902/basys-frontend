@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { jwtDecode } from 'jwt-decode';
-import { TUser } from './models/user.model';
+import { TUser } from '../user/models/user.model';
 import { getMe } from './auth.service';
 import { ACCESS_TOKEN_KEY } from './constants/access-token-key.const';
 

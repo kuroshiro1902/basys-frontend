@@ -5,7 +5,7 @@ import { TUser, TUserLoginInput, ZUserLoginInput } from '@/core/user/models/user
 import { useShallow } from 'zustand/react/shallow';
 import { useEffect } from 'react';
 import { useAuthStore } from '@/core/auth/auth.store';
-import useLoginMutation from '@/core/auth/hooks/use-login-mutation.hook';
+import useLoginMutation from '@/core/auth/hooks/useLoginMutation.hook';
 
 type props = {
   onSuccess?: (user: TUser) => void;

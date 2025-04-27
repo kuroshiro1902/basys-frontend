@@ -1,11 +1,15 @@
 import { useMemo, useState } from 'react';
 import PageContainer from '../shared/components/page-container';
-import useGetAllUsers from '@/core/user/hooks/get-all-users.hook';
+import useGetAllUsers from '@/core/user/hooks/getAllUsers.hook';
 import { Table, Button, Image } from 'antd';
 import { TUser } from '@/core/user/models/user.model';
 import { ColumnsType } from 'antd/es/table';
 import CreateUser from './components/CreateUser';
 import { throttle } from '@/utils/throttle.util';
+import { useAuthStore } from '@/core/auth/auth.store';
+import { ROUTE } from '@/router/routes.const';
+import { Navigate } from 'react-router';
+import { EPermission } from '@/core/permission/constants/permission.const';
 const columns: ColumnsType<TUser> = [
   {
     title: 'STT',
@@ -49,6 +53,11 @@ const columns: ColumnsType<TUser> = [
 ];
 
 function UserManagement() {
+  const user = useAuthStore((s) => s.user);
+  if (!user?.permissions?.includes(EPermission.admin)) {
+    return <Navigate to={ROUTE.INDEX} replace />;
+  }
+
   const [pageIndex, setPageIndex] = useState(1);
   const { data, isLoading, isFetching, isPending, refetch } = useGetAllUsers(pageIndex);
   const disabled = isFetching || isPending;
