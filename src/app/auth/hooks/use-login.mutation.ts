@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { TUserLoginInput } from '@/core/user/models/user.model';
 import { THookHandler } from '@/core/shared/models/service-handler.model';
-import { login } from '../auth.service';
+import { login } from '@/core/auth/auth.service';
 
 type TServiceResponseData<T extends (...args: any[]) => Promise<any>> = Awaited<ReturnType<T>>;
 

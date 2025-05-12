@@ -13,11 +13,7 @@ export type TPageInfo = {
 };
 
 export const ZPageInput = (defaultPageSize = 20) =>
-  z
-    .object({
-      pageIndex: z.number().int().positive().max(Number.MAX_SAFE_INTEGER).default(1),
-      pageSize: z.number().int().positive().max(Number.MAX_SAFE_INTEGER).default(defaultPageSize),
-    })
-    .transform((data) => ({
-      ...data,
-    }));
+  z.object({
+    pageIndex: z.number().int().positive().max(Number.MAX_SAFE_INTEGER).default(1),
+    pageSize: z.number().int().positive().max(Number.MAX_SAFE_INTEGER).default(defaultPageSize),
+  });

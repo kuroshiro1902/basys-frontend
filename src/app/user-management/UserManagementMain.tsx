@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import PageContainer from '../shared/components/page-container';
-import useGetAllUsers from '@/core/user/hooks/getAllUsers.hook';
+import useGetAllUsers from '@/app/user-management/hooks/use-get-all-users.query';
 import { Table, Button, Image } from 'antd';
 import { TUser } from '@/core/user/models/user.model';
 import { ColumnsType } from 'antd/es/table';
@@ -8,7 +8,7 @@ import CreateUser from './components/CreateUser';
 import { throttle } from '@/utils/throttle.util';
 import { useAuthStore } from '@/core/auth/auth.store';
 import { ROUTE } from '@/router/routes.const';
-import { Navigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import { EPermission } from '@/core/permission/constants/permission.const';
 const columns: ColumnsType<TUser> = [
   {
@@ -54,15 +54,19 @@ const columns: ColumnsType<TUser> = [
 
 function UserManagement() {
   const user = useAuthStore((s) => s.user);
-  if (!user?.permissions?.includes(EPermission.admin)) {
-    return <Navigate to={ROUTE.INDEX} replace />;
-  }
-
+  const navigate = useNavigate();
   const [pageIndex, setPageIndex] = useState(1);
   const { data, isLoading, isFetching, isPending, refetch } = useGetAllUsers(pageIndex);
   const disabled = isFetching || isPending;
 
   const handleRefetch = useMemo(() => throttle(() => refetch(), 3000), [refetch]);
+
+  useEffect(() => {
+    console.log(user?.permissions?.includes(EPermission.admin));
+    if (!user?.permissions?.includes(EPermission.admin)) {
+      navigate(ROUTE.INDEX, { replace: true });
+    }
+  }, [!!user?.permissions?.includes(EPermission.admin)]);
 
   return (
     <PageContainer pageTitle="Quản lý tài khoản" activeSidebarItemId="user-management-main">

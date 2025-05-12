@@ -1,5 +1,5 @@
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
-import { getAllUsers } from '../user.service';
+import { getAllUsers } from '@/core/user/user.service';
 
 const useGetAllUsers = (pageIndex = 1) => {
   return useQuery({

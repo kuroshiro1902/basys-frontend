@@ -1,14 +1,15 @@
 import { useSidebarStore } from '@/app/layout/sidebar/sidebar.store';
+import clsx from 'clsx';
 import { forwardRef, useEffect } from 'react';
 
-type PageContainerProps = {
+interface PageContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   pageTitle?: string;
   activeSidebarItemId?: string;
   children?: React.ReactNode;
-};
+}
 
 const PageContainer = forwardRef<HTMLDivElement, PageContainerProps>(
-  ({ pageTitle, activeSidebarItemId, children }, ref) => {
+  ({ pageTitle, activeSidebarItemId, children, className }, ref) => {
     const activeItemId = useSidebarStore((state) => state.currentActiveItem);
     const setActiveItem = useSidebarStore((state) => state.setActiveItem);
 
@@ -17,18 +18,14 @@ const PageContainer = forwardRef<HTMLDivElement, PageContainerProps>(
       if (activeSidebarItemId && activeSidebarItemId !== activeItemId) {
         setActiveItem(activeSidebarItemId);
       }
-    }, []);
+    }, [pageTitle, activeSidebarItemId]);
 
     return (
-      <div 
-        ref={ref}
-        data-page-title={pageTitle ?? ''} 
-        className={`w-full p-2 bg-foreground/10`}
-      >
+      <div ref={ref} data-page-title={pageTitle ?? ''} className={clsx(`w-full bg-foreground/5`, className)}>
         {children}
       </div>
     );
-  }
+  },
 );
 
 PageContainer.displayName = 'PageContainer';

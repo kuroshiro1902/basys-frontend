@@ -10,7 +10,7 @@ import ThemeButton from '@/app/shared/components/theme-button';
 import { TMenuItem } from './models/menu-item.model';
 import { createMenu } from './utils/create-menu.util';
 import { useState } from 'react';
-import useLogoutMutation from '@/core/auth/hooks/useLogoutMutation.hook';
+import useLogoutMutation from '@/app/auth/hooks/use-logout.mutation';
 type props = {};
 
 function Head({ user }: { user?: TUser | null }) {
@@ -127,14 +127,10 @@ function MenuItem({ label, url, icon, children, id }: TMenuItem) {
 function LogoutButton() {
   const isExpanded = useSidebarStore((s) => s.isExpanded);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const navigate = useNavigate();
   const logout = useAuthStore((s) => s.logout);
   const { mutate: handleLogout, isPending } = useLogoutMutation({
     onSuccess: () => {
       logout();
-      setTimeout(() => {
-        navigate(ROUTE.INDEX);
-      }, 100);
     },
     onError: (error: any) => {
       message.error(error.message);
@@ -190,7 +186,7 @@ function Sidebar({}: props) {
   const user = useAuthStore((state) => state.user);
   return (
     <div
-      className={clsx('flex flex-col justify-between bg-foreground relative h-full w-16 transition-all', {
+      className={clsx('z-1 flex flex-col justify-between bg-foreground relative h-full w-16 transition-all', {
         'w-48': isExpanded,
       })}
     >

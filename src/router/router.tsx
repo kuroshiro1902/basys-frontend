@@ -9,6 +9,8 @@ const Login = lazy(() => import('../app/auth/Login'));
 const About = lazy(() => import('../app/about/About'));
 const UserManagementDashboard = lazy(() => import('../app/user-management/UserManagementDashboard')); 
 const NotFound = lazy(() => import('../app/not-found/NotFound'));
+const Collection = lazy(() => import('../app/collection/collection'));
+const CollectionDetail = lazy(() => import('../app/collection-detail/collection-detail'));
 
 export default function Router() {
   return (
@@ -22,7 +24,8 @@ export default function Router() {
           <Route path={ROUTE.USER_MANAGEMENT_DASHBOARD} element={<UserManagementDashboard />} />
           <Route path={ROUTE.USER_MANAGEMENT} element={<Navigate to={ROUTE.USER_MANAGEMENT_MAIN} replace />} />
           {/* <Route path="about" element={<About />} /> */}
-
+          <Route path={ROUTE.COLLECTION} element={<Collection />} />
+          <Route path={ROUTE.COLLECTION_DETAIL} element={<CollectionDetail />} />
           {/* <Route element={<AuthLayout />}>
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />

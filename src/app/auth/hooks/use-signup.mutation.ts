@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { signup } from '../auth.service';
+import { signup } from '@/core/auth/auth.service';
 import { TUserCreateInput } from '@/core/user/models/user.model';
 import { THookHandler } from '@/core/shared/models/service-handler.model';
 

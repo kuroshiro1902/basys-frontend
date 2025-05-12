@@ -1,16 +1,16 @@
-import { Button, ConfigProvider } from 'antd';
+import { Button, ConfigProvider, message } from 'antd';
 import theme from './antd.config';
 import Router from './router/router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BootstrapContext } from './app/contexts/bootstrap.context';
-
-const queryClient = new QueryClient({
-  defaultOptions: { queries: { retry: false, refetchOnWindowFocus: false, gcTime: 5 * 60 * 1000 } },
-});
+import { queryClient } from './query-client';
 
 function App() {
+  const [_, contextHolder] = message.useMessage();
+
   return (
     <ConfigProvider theme={theme}>
+      {contextHolder}
       <QueryClientProvider client={queryClient}>
         <BootstrapContext>
           <Router />

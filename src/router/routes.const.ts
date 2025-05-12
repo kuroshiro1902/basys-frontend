@@ -5,4 +5,6 @@ export const ROUTE = {
   USER_MANAGEMENT: '/user-management',
   USER_MANAGEMENT_DASHBOARD: '/user-management/dashboard',
   USER_MANAGEMENT_MAIN: '/user-management/main',
+  COLLECTION: '/collection',
+  COLLECTION_DETAIL: '/collection/:id',
 };
